@@ -21,13 +21,28 @@ def im_mentioned(event):
     text = event.get('text')
     return '<@{}>'.format(bot_id) in text.strip().split()
 
+def is_hi(message):
+    tokens = [word.lower() for word in message.strip().split()]
+    greetings = ['hello', 'hey', 'hi', 'hiya', 'sup', 'yo']
+    return any(greeting in tokens for greeting in greetings)
+
+def is_bye(message):
+    tokens = [word.lower() for word in message.strip().split()]
+    goodbyes = ['bye', 'goodbye', 'cya']
+    return any(bye in tokens for bye in goodbyes)
+
 def handle_message(message, user, channel):
-    # TODO Implement later
-    post_message(message=message, channel=channel)
+    user_mention = '<@{}>'.format(user)
+    if is_hi(message):
+        post_message(message="Hiya, {}".format(user_mention), channel=channel)
+    elif is_bye(message):
+        post_message(message="Goodbye indeed, {}".format(user_mention), channel=channel)
+    else:
+        post_message(message="Sorry, {}, I didn't get that!".format(user_mention), channel=channel)
 
 def post_message(message, channel):
-    sc.api_call('chat.postMessage', channel=channel,
-                          text=message, as_user=True)
+    sc.api_call('chat.postMessage', channel=channel, text=message, as_user=True)
+
 def run():
     if sc.rtm_connect():
         print "Connected"
@@ -39,7 +54,7 @@ def run():
                         handle_message(message=event.get('text'), user=event.get('user'), channel=event.get('channel'))
             time.sleep(1)
     else:
-        print('Connection to Slack failed')
+        print 'Connection to Slack failed'
 
 if __name__=='__main__':
     run()
