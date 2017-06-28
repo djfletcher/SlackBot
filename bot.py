@@ -1,17 +1,15 @@
-import slackclient
+from slackclient import SlackClient
 
-slack_api_token = 'xoxb-203931756929-eyHe3QYwJYBDmwqrUE9OhlKb'
-slack_bot_name = 'hooray'
+slack_token = 'xoxb-203931756929-eyHe3QYwJYBDmwqrUE9OhlKb'
+bot_name = 'hooray'
+bot_id = 'U5ZTDN8TB'
 
 # initialize slack client
-slack_client = slackclient.SlackClient(slack_api_token)
+sc = SlackClient(slack_token)
 
-# check if everything is alright
-is_ok = slack_client.api_call("users.list").get('ok')
-print(is_ok)
-
-# find the id of our slack bot
-if(is_ok):
-    for user in slack_client.api_call("users.list").get('members'):
-        if user.get('name') == slack_bot_name:
-            print(user.get('id'))
+sc.api_call(
+    'chat.postMessage',
+    channel="#general",
+    text="oodelolly oodelolly golly whatta day",
+    as_user=True
+)
